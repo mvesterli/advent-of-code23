@@ -1,0 +1,35 @@
+#![cfg(test)]
+
+use std::collections::HashSet;
+
+#[test]
+fn part1() {
+    let input = include_str!("../input/day4.txt");
+
+    let mut sum = 0;
+
+    for card in input.lines() {
+        let (_, contents) = card.split_once(':').unwrap();
+        let (winning, owned) = contents.split_once('|').unwrap();
+
+        let winning: HashSet<i32> = winning
+            .trim()
+            .split_ascii_whitespace()
+            .map(|v| v.parse().unwrap())
+            .collect();
+
+        let mut points = 0;
+        let owned = owned
+            .trim()
+            .split_ascii_whitespace()
+            .map(|v| v.parse::<i32>().unwrap());
+        for card in owned {
+            if winning.contains(&card) {
+                points = if points == 0 { 1 } else { points * 2 };
+            }
+        }
+        sum += points;
+    }
+
+    println!("{sum}");
+}
