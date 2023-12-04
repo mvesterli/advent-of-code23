@@ -33,3 +33,35 @@ fn part1() {
 
     println!("{sum}");
 }
+
+#[test]
+fn part2() {
+    let input = include_str!("../input/day4.txt");
+
+    let mut copies: Vec<_> = input.lines().map(|_| 1).collect();
+
+    for (idx, card) in input.lines().enumerate() {
+        let (_, contents) = card.split_once(':').unwrap();
+        let (winning, owned) = contents.split_once('|').unwrap();
+
+        let winning: HashSet<i32> = winning
+            .trim()
+            .split_ascii_whitespace()
+            .map(|v| v.parse().unwrap())
+            .collect();
+
+        let matches = owned
+            .trim()
+            .split_ascii_whitespace()
+            .map(|v| v.parse().unwrap())
+            .filter(|c| winning.contains(c))
+            .count();
+        for i in idx + 1..=idx + matches {
+            if i < copies.len() {
+                copies[i] += copies[idx];
+            }
+        }
+    }
+
+    println!("{}", copies.iter().sum::<i32>());
+}
