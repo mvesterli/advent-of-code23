@@ -21,3 +21,19 @@ fn part1() {
         .product();
     println!("{}", result);
 }
+
+#[test]
+fn part2() {
+    let input = include_str!("../input/day6.txt");
+
+    let lines = input
+        .lines()
+        .map(|v| v.replace(' ', ""))
+        .collect::<Vec<_>>();
+    let time: f64 = lines[0].split_once(':').unwrap().1.parse().unwrap();
+    let record: f64 = lines[1].split_once(':').unwrap().1.parse().unwrap();
+
+    let record_hold_time = (time - (time * time - 4.0 * record).sqrt()) / 2.0;
+    let result = time as i32 - 2 * record_hold_time.floor() as i32 - 1;
+    println!("{}", result);
+}
