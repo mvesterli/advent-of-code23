@@ -42,3 +42,55 @@ fn part1() {
     }
     println!("{}", (len + 1) / 2);
 }
+
+#[test]
+fn part2() {
+    let input = include_str!("../input/day10.txt");
+    let start = (98, 90);
+    let next = (99, 90);
+
+    let grid: Vec<Vec<char>> = input.lines().map(|line| line.chars().collect()).collect();
+
+    let mut is_loop = vec![vec![false; grid[0].len()]; grid.len()];
+    is_loop[start.0 as usize][start.1 as usize] = true;
+    is_loop[next.0 as usize][next.1 as usize] = true;
+
+    let mut prev = start;
+    let mut pos = next;
+
+    while pos != start {
+        let next = get_connecting(&grid, pos, prev);
+        is_loop[next.0 as usize][next.1 as usize] = true;
+        prev = pos;
+        pos = next;
+    }
+
+    let mut res = 0;
+    for row in is_loop.iter().zip(&grid) {
+        let mut inside = false;
+        let mut from_below = false;
+        for (is_loop, c) in row.0.iter().zip(row.1) {
+            if *is_loop {
+                match *c {
+                    '|' => inside = !inside,
+                    'L' => from_below = false,
+                    'F' => from_below = true,
+                    'J' => {
+                        if from_below {
+                            inside = !inside
+                        }
+                    }
+                    '7' => {
+                        if !from_below {
+                            inside = !inside
+                        }
+                    }
+                    _ => {}
+                }
+            } else if inside {
+                res += 1;
+            }
+        }
+    }
+    println!("{res}");
+}
