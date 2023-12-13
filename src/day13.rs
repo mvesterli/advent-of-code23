@@ -19,68 +19,46 @@ fn parse_bin(pattern: &[&str]) -> (Vec<u32>, Vec<u32>) {
     (rows, cols)
 }
 
-fn get_score_1((rows, cols): (Vec<u32>, Vec<u32>)) -> usize {
+fn is_mirror(rows: &[u32], idx: usize, smudges: u32) -> bool {
+    (0..idx)
+        .rev()
+        .zip(idx..rows.len())
+        .map(|(a, b)| (rows[a] ^ rows[b]).count_ones())
+        .sum::<u32>()
+        == smudges
+}
+
+fn get_score(rows: Vec<u32>, cols: Vec<u32>, smudges: u32) -> usize {
     for i in 1..rows.len() {
-        let is_mirror = (0..i)
-            .rev()
-            .zip(i..rows.len())
-            .all(|(a, b)| rows[a] == rows[b]);
-        if is_mirror {
+        if is_mirror(&rows, i, smudges) {
             return 100 * i;
         }
     }
     for i in 1..cols.len() {
-        let is_mirror = (0..i)
-            .rev()
-            .zip(i..cols.len())
-            .all(|(a, b)| cols[a] == cols[b]);
-        if is_mirror {
+        if is_mirror(&cols, i, smudges) {
             return i;
         }
     }
     0
 }
 
-fn get_score_2((rows, cols): (Vec<u32>, Vec<u32>)) -> usize {
-    for i in 1..rows.len() {
-        let is_mirror = (0..i)
-            .rev()
-            .zip(i..rows.len())
-            .map(|(a, b)| (rows[a] ^ rows[b]).count_ones())
-            .sum::<u32>()
-            == 1;
-        if is_mirror {
-            return 100 * i;
-        }
-    }
-    for i in 1..cols.len() {
-        let is_mirror = (0..i)
-            .rev()
-            .zip(i..cols.len())
-            .map(|(a, b)| (cols[a] ^ cols[b]).count_ones())
-            .sum::<u32>()
-            == 1;
-        if is_mirror {
-            return i;
-        }
-    }
-    0
+fn solve(input: &str, smudges: u32) -> usize {
+    let lines: Vec<_> = input.lines().collect();
+    let patterns = lines.split(|s| s.is_empty());
+    patterns
+        .map(parse_bin)
+        .map(|(rows, cols)| get_score(rows, cols, smudges))
+        .sum::<usize>()
 }
 
 #[test]
 fn part1() {
     let input = include_str!("../input/day13.txt");
-    let lines: Vec<_> = input.lines().collect();
-    let patterns = lines.split(|s| s.is_empty());
-    let sum: usize = patterns.map(parse_bin).map(get_score_1).sum();
-    println!("{sum}");
+    println!("{}", solve(input, 0));
 }
 
 #[test]
 fn part2() {
     let input = include_str!("../input/day13.txt");
-    let lines: Vec<_> = input.lines().collect();
-    let patterns = lines.split(|s| s.is_empty());
-    let sum: usize = patterns.map(parse_bin).map(get_score_2).sum();
-    println!("{sum}");
+    println!("{}", solve(input, 1));
 }
