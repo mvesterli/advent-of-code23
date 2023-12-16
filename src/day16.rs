@@ -6,15 +6,11 @@ fn mov(pos: (i32, i32), dir: (i32, i32)) -> ((i32, i32), (i32, i32)) {
     ((pos.0 + dir.0, pos.1 + dir.1), dir)
 }
 
-#[test]
-fn part1() {
-    let input = include_str!("../input/day16.txt");
-
-    let grid: Vec<Vec<char>> = input.lines().map(|l| l.chars().collect()).collect();
+fn energized(grid: &Vec<Vec<char>>, entry: ((i32, i32), (i32, i32))) -> usize {
     let mut energized = vec![vec![[false; 4]; grid[0].len()]; grid.len()];
 
     let mut q: VecDeque<((i32, i32), (i32, i32))> = VecDeque::new();
-    q.push_back(((0, 0), (0, 1)));
+    q.push_back(entry);
     while let Some((pos, dir)) = q.pop_front() {
         if pos.0 < 0 || pos.0 >= grid.len() as i32 || pos.1 < 0 || pos.1 >= grid[0].len() as i32 {
             continue;
@@ -48,9 +44,32 @@ fn part1() {
         }
     }
 
-    let sum: usize = energized
+    energized
         .iter()
         .map(|l| l.iter().filter(|v| v.iter().any(|v| *v)).count())
-        .sum();
-    println!("{sum}");
+        .sum()
+}
+
+#[test]
+fn part1() {
+    let input = include_str!("../input/day16.txt");
+
+    let grid: Vec<Vec<char>> = input.lines().map(|l| l.chars().collect()).collect();
+    println!("{}", energized(&grid, ((0, 0), (0, 1))));
+}
+
+#[test]
+fn part2() {
+    let input = include_str!("../input/day16.txt");
+
+    let grid: Vec<Vec<char>> = input.lines().map(|l| l.chars().collect()).collect();
+    let res = (0..grid.len() as i32)
+        .map(|y| ((y, 0), (0, 1)))
+        .chain((0..grid.len() as i32).map(|y| ((y, grid[0].len() as i32 - 1), (0, -1))))
+        .chain((0..grid[0].len() as i32).map(|x| ((0, x), (1, 0))))
+        .chain((0..grid[0].len() as i32).map(|x| ((grid.len() as i32 - 1, x), (-1, 0))))
+        .map(|entry| energized(&grid, entry))
+        .max()
+        .unwrap();
+    println!("{}", res);
 }
