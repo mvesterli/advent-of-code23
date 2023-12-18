@@ -1,78 +1,82 @@
 #![cfg(test)]
 
-use std::cell::Cell;
+use regex::Regex;
 
-fn traverse(input: &str, mut f: impl FnMut((i32, i32))) {
-    let mut pos = (0, 0);
-    f(pos);
-    for line in input.lines() {
-        let (dir, rem) = line.split_once(' ').unwrap();
-        let (num, color) = rem.split_once(' ').unwrap();
-        let num: i32 = num.parse().unwrap();
-        for _ in 0..num {
-            match dir {
-                "D" => pos.0 += 1,
-                "U" => pos.0 -= 1,
-                "R" => pos.1 += 1,
-                "L" => pos.1 -= 1,
-                _ => {}
-            }
-            f(pos);
-        }
-    }
+fn get_positions(input: &Vec<(char, i64)>) -> Vec<(i64, i64)> {
+    input
+        .iter()
+        .scan((0, 0), |pos, (dir, count)| {
+            *pos = match dir {
+                'R' => (pos.0, pos.1 + count),
+                'D' => (pos.0 + count, pos.1),
+                'L' => (pos.0, pos.1 - count),
+                'U' => (pos.0 - count, pos.1),
+                _ => unreachable!(),
+            };
+            Some(*pos)
+        })
+        .collect()
 }
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
-enum CellPosition {
-    Inside,
-    Outside,
-    Border,
-    Unknown,
+fn count_filled(positions: &Vec<(i64, i64)>) -> i64 {
+    let mut sum = 0;
+    let mut len = 0;
+    for i in 0..positions.len() {
+        let next = (i + 1) % positions.len();
+        sum += positions[i].0 * positions[next].1 - positions[i].1 * positions[next].0;
+        len +=
+            (positions[i].0 - positions[next].0).abs() + (positions[i].1 - positions[next].1).abs();
+    }
+    (sum.abs() + len) / 2 + 1
 }
 
-fn flood_fill(grid: &mut Vec<Vec<CellPosition>>, state: CellPosition, start: (i32, i32)) {
-    let mut q = Vec::new();
-    q.push(start);
-    while let Some(pos) = q.pop() {
-        if pos.0 < 0 || pos.1 < 0 || pos.0 >= grid.len() as i32 || pos.1 >= grid[0].len() as i32 {
-            continue;
-        }
-        if grid[pos.0 as usize][pos.1 as usize] != CellPosition::Unknown {
-            continue;
-        }
-        grid[pos.0 as usize][pos.1 as usize] = state;
-        q.push((pos.0 + 1, pos.1));
-        q.push((pos.0 - 1, pos.1));
-        q.push((pos.0, pos.1 + 1));
-        q.push((pos.0, pos.1 - 1));
-    }
+fn parse1(input: &str) -> Vec<(char, i64)> {
+    input
+        .lines()
+        .map(|line| {
+            let (dir, rest) = line.split_once(' ').unwrap();
+            let num = rest.split_once(' ').unwrap().0.parse().unwrap();
+            (dir.chars().next().unwrap(), num)
+        })
+        .collect()
 }
 
 #[test]
 fn part1() {
     let input = include_str!("../input/day18.txt");
+    let input = parse1(input);
+    let positions = get_positions(&input);
+    println!("{}", count_filled(&positions));
+}
 
-    let mut min = (0, 0);
-    let mut max = (0, 0);
-    traverse(input, |pos| {
-        min.0 = min.0.min(pos.0);
-        min.1 = min.1.min(pos.1);
-        max.0 = max.0.max(pos.0);
-        max.1 = max.1.max(pos.1);
-    });
+fn convert_instruction(c: char) -> char {
+    match c {
+        '0' => 'R',
+        '1' => 'D',
+        '2' => 'L',
+        '3' => 'U',
+        _ => unreachable!(),
+    }
+}
 
-    let offset = (min.0.abs() + 1, min.1.abs() + 1);
-    let size = (max.0 + 3 + offset.0, max.1 + 3 + offset.1);
-    let mut grid = vec![vec![CellPosition::Unknown; size.1 as usize]; size.0 as usize];
+fn parse2(input: &str) -> Vec<(char, i64)> {
+    let re = Regex::new(r"\w \d+ \(#(\w+)\)").unwrap();
+    input
+        .lines()
+        .map(|l| re.captures(l).unwrap().extract::<1>().1[0])
+        .map(|s| {
+            (
+                convert_instruction(s.chars().nth(5).unwrap()),
+                i64::from_str_radix(&s[0..5], 16).unwrap(),
+            )
+        })
+        .collect()
+}
 
-    traverse(input, |pos| {
-        grid[(pos.0 + offset.0) as usize][(pos.1 + offset.1) as usize] = CellPosition::Border;
-    });
-    flood_fill(&mut grid, CellPosition::Outside, (0, 0));
-
-    let result: usize = grid
-        .iter()
-        .map(|l| l.iter().filter(|v| **v != CellPosition::Outside).count())
-        .sum();
-    println!("{}", result);
+#[test]
+fn part2() {
+    let input = include_str!("../input/day18.txt");
+    let input = parse2(input);
+    let positions = get_positions(&input);
+    println!("{}", count_filled(&positions));
 }
