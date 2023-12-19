@@ -115,3 +115,51 @@ fn part1() {
     }
     println!("{result}");
 }
+
+fn solve(
+    workflows: &HashMap<&str, Workflow>,
+    name: &str,
+    mut options: HashMap<char, (u64, u64)>,
+) -> u64 {
+    if options.values().any(|v| v.0 > v.1) {
+        return 0;
+    }
+    if name == "A" {
+        return options.values().map(|v| v.1 - v.0 + 1).product();
+    }
+    if name == "R" {
+        return 0;
+    }
+
+    let mut res = 0;
+    for rule in &workflows[name].rules {
+        let current = options[&rule.var];
+        match rule.op {
+            '>' => {
+                options.insert(rule.var, (rule.val as u64 + 1, current.1));
+                res += solve(workflows, rule.workflow, options.clone());
+                options.insert(rule.var, (current.0, rule.val as u64));
+            }
+            '<' => {
+                options.insert(rule.var, (current.0, rule.val as u64 - 1));
+                res += solve(workflows, rule.workflow, options.clone());
+                options.insert(rule.var, (rule.val as u64, current.1));
+            }
+            _ => {
+                unreachable!()
+            }
+        }
+    }
+    res += solve(workflows, workflows[name].fallback, options);
+    res
+}
+
+#[test]
+fn part2() {
+    let input = include_str!("../input/day19.txt");
+    let (workflows, _) = parse(input);
+    let workflows = workflows.into_iter().map(|v| (v.name, v)).collect();
+    let options = "xmas".chars().map(|c| (c, (1, 4000))).collect();
+    let result = solve(&workflows, "in", options);
+    println!("{result}");
+}
