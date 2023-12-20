@@ -62,10 +62,7 @@ impl<'a> Node<'a> {
     }
 }
 
-#[test]
-fn part1() {
-    let input = include_str!("../input/day20.txt");
-
+fn parse(input: &str) -> (Vec<&str>, HashMap<&str, Node>) {
     let mut broadcast = None;
     let mut nodes = HashMap::new();
     for line in input.lines() {
@@ -94,18 +91,21 @@ fn part1() {
             broadcast = Some(dest);
         }
     }
-    let broadcast = broadcast.unwrap();
-
-    {
-        let nodes_vec: Vec<Node> = nodes.values().cloned().collect();
-        for from in nodes_vec {
-            for to in from.dest {
-                if let Some(to) = nodes.get_mut(to) {
-                    to.add_connection(from.name);
-                }
+    let nodes_vec: Vec<Node> = nodes.values().cloned().collect();
+    for from in nodes_vec {
+        for to in from.dest {
+            if let Some(to) = nodes.get_mut(to) {
+                to.add_connection(from.name);
             }
         }
     }
+    (broadcast.unwrap(), nodes)
+}
+
+#[test]
+fn part1() {
+    let input = include_str!("../input/day20.txt");
+    let (broadcast, mut nodes) = parse(input);
 
     let mut low = 0;
     let mut high = 0;
@@ -131,4 +131,39 @@ fn part1() {
         }
     }
     println!("{}", low * high);
+}
+
+#[test]
+fn part2() {
+    let input = include_str!("../input/day20.txt");
+    let (broadcast, mut nodes) = parse(input);
+
+    let mut iters = HashMap::new();
+    for presses in 1_i64.. {
+        if iters.len() == 4 {
+            println!("{}", iters.into_values().reduce(num::integer::lcm).unwrap());
+            break;
+        }
+
+        let mut q = VecDeque::new();
+        for node in &broadcast {
+            q.push_back(Pulse {
+                from: "broadcast",
+                to: node,
+                is_high: false,
+            });
+        }
+        while let Some(pulse) = q.pop_front() {
+            if let Some(to) = nodes.get_mut(pulse.to) {
+                to.receive(&pulse, &mut q);
+            }
+            if let NodeType::Conj(m) = &nodes["vd"].kind {
+                for value in m {
+                    if *value.1 && !iters.contains_key(*value.0) {
+                        iters.insert(*value.0, presses);
+                    }
+                }
+            }
+        }
+    }
 }
