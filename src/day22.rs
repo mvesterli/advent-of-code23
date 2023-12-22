@@ -1,10 +1,9 @@
 #![cfg(test)]
 
-use std::collections::HashSet;
+use std::collections::{HashSet, VecDeque};
 
 #[derive(Debug)]
 struct Block {
-    id: usize,
     min: (usize, usize, usize),
     max: (usize, usize, usize),
 }
@@ -12,14 +11,12 @@ struct Block {
 fn parse(input: &str) -> Vec<Block> {
     input
         .lines()
-        .enumerate()
-        .map(|(id, s)| {
+        .map(|s| {
             let parts: Vec<usize> = s
                 .split(&[',', '~'])
                 .filter_map(|v| v.parse().ok())
                 .collect();
             Block {
-                id,
                 min: (parts[0], parts[1], parts[2]),
                 max: (parts[3], parts[4], parts[5]),
             }
@@ -27,28 +24,13 @@ fn parse(input: &str) -> Vec<Block> {
         .collect()
 }
 
-fn place(grid: &mut Vec<Vec<Vec<Option<usize>>>>, block: &Block, z: usize) {
+fn place(grid: &mut Vec<Vec<Vec<Option<usize>>>>, block: &Block, z: usize, idx: usize) {
     for z in z..=z + block.max.2 - block.min.2 {
         for y in block.min.1..=block.max.1 {
             for x in block.min.0..=block.max.0 {
-                grid[z][y][x] = Some(block.id);
+                grid[z][y][x] = Some(idx);
             }
         }
-    }
-}
-
-fn write_grid(grid: &Vec<Vec<Vec<Option<usize>>>>) {
-    for z in grid {
-        for y in z {
-            for x in y {
-                let c = x
-                    .map(|v| char::from_digit(v as u32, 10).unwrap())
-                    .unwrap_or('_');
-                print!("{}", c);
-            }
-            println!("");
-        }
-        println!("");
     }
 }
 
@@ -82,12 +64,63 @@ fn part1() {
     let max: usize = 400;
     let mut grid = vec![vec![vec![None; max]; max]; max];
 
-    for block in blocks {
+    for (idx, block) in blocks.iter().enumerate() {
         let (supports, z) = get_drop_location(&grid, &block);
-        place(&mut grid, &block, z);
+        place(&mut grid, &block, z, idx);
         if supports.len() == 1 {
             can_be_disintegrated[*supports.iter().next().unwrap()] = false;
         }
     }
     println!("{}", can_be_disintegrated.iter().filter(|v| **v).count());
+}
+
+fn count_falls(
+    supporting: &Vec<Vec<usize>>,
+    num_supports: &Vec<usize>,
+    disintegrated: usize,
+) -> usize {
+    let mut q = VecDeque::new();
+    let mut remaining_supports = num_supports.clone();
+
+    for idx in &supporting[disintegrated] {
+        q.push_back(*idx);
+    }
+
+    let mut res = 0;
+    while let Some(i) = q.pop_front() {
+        remaining_supports[i] -= 1;
+        if remaining_supports[i] == 0 {
+            res += 1;
+            for idx in &supporting[i] {
+                q.push_back(*idx);
+            }
+        }
+    }
+    res
+}
+
+#[test]
+fn part2() {
+    let input = include_str!("../input/day22.txt");
+    let mut blocks = parse(input);
+    blocks.sort_by_key(|v| v.min.2);
+    let mut supporting = vec![Vec::new(); blocks.len()];
+    let mut num_supports = Vec::new();
+
+    let max: usize = 400;
+    let mut grid = vec![vec![vec![None; max]; max]; max];
+
+    for (idx, block) in blocks.iter().enumerate() {
+        let (supports, z) = get_drop_location(&grid, &block);
+        place(&mut grid, &block, z, idx);
+        num_supports.push(supports.len());
+        for support in supports {
+            supporting[support].push(idx);
+        }
+    }
+
+    let res: usize = (0..blocks.len())
+        .map(|i| count_falls(&supporting, &num_supports, i))
+        .sum();
+    println!("{res}");
 }
