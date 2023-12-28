@@ -54,11 +54,11 @@ fn solve(input: &str, smudges: u32) -> usize {
 #[test]
 fn part1() {
     let input = include_str!("../input/day13.txt");
-    println!("{}", solve(input, 0));
+    assert_eq!(solve(input, 0), 30705);
 }
 
 #[test]
 fn part2() {
     let input = include_str!("../input/day13.txt");
-    println!("{}", solve(input, 1));
+    assert_eq!(solve(input, 1), 44615);
 }

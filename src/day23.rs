@@ -148,11 +148,11 @@ fn solve(input: &str, allow_slopes: bool) -> usize {
 #[test]
 fn part1() {
     let input = include_str!("../input/day23.txt");
-    println!("{}", solve(input, false));
+    assert_eq!(solve(input, false), 2294);
 }
 
 #[test]
 fn part2() {
     let input = include_str!("../input/day23.txt");
-    println!("{}", solve(input, true));
+    assert_eq!(solve(input, true), 6418);
 }

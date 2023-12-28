@@ -68,7 +68,7 @@ fn part1() {
         }
         min = min.min(idx);
     }
-    println!("{min}");
+    assert_eq!(min, 313045984);
 }
 
 #[derive(Clone, Copy, Debug)]

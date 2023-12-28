@@ -12,8 +12,7 @@ fn part1() {
         let last = line.chars().rev().find_map(|c| c.to_digit(10)).unwrap();
         sum += first * 10 + last
     }
-
-    println!("{sum}");
+    assert_eq!(sum, 55172);
 }
 
 fn parse(s: &str) -> i32 {
@@ -47,11 +46,8 @@ fn part2() {
         }
         let first = parse(matches.first().unwrap());
         let last = parse(matches.last().unwrap());
-
-        println!("{line} {matches:?}");
-
         sum += first * 10 + last
     }
 
-    println!("{sum}");
+    assert_eq!(sum, 54925);
 }

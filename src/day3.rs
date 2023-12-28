@@ -35,7 +35,7 @@ fn part1() {
         }
     }
 
-    println!("{sum}");
+    assert_eq!(sum, 509115);
 }
 
 #[test]
@@ -65,5 +65,5 @@ fn part2() {
         }
     }
 
-    println!("{sum}");
+    assert_eq!(sum, 75220503);
 }

@@ -32,7 +32,7 @@ fn part1() {
             sum += id;
         }
     }
-    println!("{sum}");
+    assert_eq!(sum, 3059);
 }
 
 #[test]
@@ -59,5 +59,5 @@ fn part2() {
         }
         sum += max_r * max_g * max_b;
     }
-    println!("{sum}");
+    assert_eq!(sum, 65371);
 }

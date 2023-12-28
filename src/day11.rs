@@ -29,11 +29,11 @@ fn get_distances(positions: Vec<(i64, i64)>, expansion: i64) -> i64 {
 #[test]
 fn part1() {
     let input = include_str!("../input/day11.txt");
-    println!("{}", get_distances(get_positions(input), 2));
+    assert_eq!(get_distances(get_positions(input), 2), 10173804);
 }
 
 #[test]
 fn part2() {
     let input = include_str!("../input/day11.txt");
-    println!("{}", get_distances(get_positions(input), 1_000_000));
+    assert_eq!(get_distances(get_positions(input), 1_000_000), 634324905172);
 }

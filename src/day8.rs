@@ -30,7 +30,7 @@ fn part1() {
         };
         res += 1;
     }
-    println!("{}", res);
+    assert_eq!(res, 12083);
 }
 
 #[test]
@@ -85,5 +85,5 @@ fn part2() {
     }
 
     let res = results.into_iter().fold(1i64, num::integer::lcm);
-    println!("{res}");
+    assert_eq!(res, 13385272668829);
 }

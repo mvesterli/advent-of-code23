@@ -51,7 +51,7 @@ fn part1() {
 
     let grid: Vec<Vec<char>> = input.lines().map(|l| l.chars().collect()).collect();
     let dists = dists_from(&grid, start);
-    println!("{}", count_le_than(&dists, needed));
+    assert_eq!(count_le_than(&dists, needed), 3724);
 }
 
 #[test]
@@ -95,5 +95,5 @@ fn part2() {
     for side in &side_dists {
         result += count_le_than(side, rem_far - 1 + start.0 as i64) as i64;
     }
-    println!("{result}");
+    assert_eq!(result, 620348631910321);
 }

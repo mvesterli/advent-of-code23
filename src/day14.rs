@@ -50,12 +50,10 @@ fn part1() {
     let input = include_str!("../input/day14.txt");
     let mut input: Vec<Vec<char>> = input.lines().map(|l| l.chars().collect()).collect();
     tilt_north(&mut input);
-    println!("{}", load(&input));
+    assert_eq!(load(&input), 105784);
 }
 
-#[test]
-fn part2() {
-    let input = include_str!("../input/day14.txt");
+fn solve2(input: &str) -> usize {
     let mut input: Vec<Vec<char>> = input.lines().map(|l| l.chars().collect()).collect();
 
     let mut results = Vec::new();
@@ -65,12 +63,18 @@ fn part2() {
             if next == *grid {
                 let loopback_len = current_cycle - idx + 1;
                 if (1000_000_000 - current_cycle) % loopback_len == 0 {
-                    println!("{}", load(&input));
-                    return;
+                    return load(&input);
                 }
             }
         }
         results.push(input);
         input = next;
     }
+    0
+}
+
+#[test]
+fn part2() {
+    let input = include_str!("../input/day14.txt");
+    assert_eq!(solve2(input), 91286);
 }

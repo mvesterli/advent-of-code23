@@ -121,11 +121,11 @@ fn get_dist(adj_list: &[Vec<Edge>]) -> Option<u32> {
 #[test]
 fn part1() {
     let input = include_str!("../input/day17.txt");
-    println!("{:?}", get_dist(&parse_graph(input, 1, 3)).unwrap());
+    assert_eq!(get_dist(&parse_graph(input, 1, 3)).unwrap(), 936);
 }
 
 #[test]
 fn part2() {
     let input = include_str!("../input/day17.txt");
-    println!("{:?}", get_dist(&parse_graph(input, 4, 10)).unwrap());
+    assert_eq!(get_dist(&parse_graph(input, 4, 10)).unwrap(), 1157);
 }

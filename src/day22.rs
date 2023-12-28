@@ -71,7 +71,7 @@ fn part1() {
             can_be_disintegrated[*supports.iter().next().unwrap()] = false;
         }
     }
-    println!("{}", can_be_disintegrated.iter().filter(|v| **v).count());
+    assert_eq!(can_be_disintegrated.iter().filter(|v| **v).count(), 375);
 }
 
 fn count_falls(
@@ -122,5 +122,5 @@ fn part2() {
     let res: usize = (0..blocks.len())
         .map(|i| count_falls(&supporting, &num_supports, i))
         .sum();
-    println!("{res}");
+    assert_eq!(res, 72352);
 }

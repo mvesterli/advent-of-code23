@@ -19,7 +19,7 @@ fn part1() {
             time as i32 - 2 * record_hold_time.floor() as i32 - 1
         })
         .product();
-    println!("{}", result);
+    assert_eq!(result, 4568778);
 }
 
 #[test]
@@ -35,5 +35,5 @@ fn part2() {
 
     let record_hold_time = (time - (time * time - 4.0 * record).sqrt()) / 2.0;
     let result = time as i32 - 2 * record_hold_time.floor() as i32 - 1;
-    println!("{}", result);
+    assert_eq!(result, 28973936);
 }

@@ -46,7 +46,7 @@ fn part1() {
     let input = include_str!("../input/day18.txt");
     let input = parse1(input);
     let positions = get_positions(&input);
-    println!("{}", count_filled(&positions));
+    assert_eq!(count_filled(&positions), 26857);
 }
 
 fn convert_instruction(c: char) -> char {
@@ -78,5 +78,5 @@ fn part2() {
     let input = include_str!("../input/day18.txt");
     let input = parse2(input);
     let positions = get_positions(&input);
-    println!("{}", count_filled(&positions));
+    assert_eq!(count_filled(&positions), 129373230496292);
 }

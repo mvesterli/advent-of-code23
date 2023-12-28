@@ -40,7 +40,7 @@ fn part1() {
         pos = next;
         len += 1;
     }
-    println!("{}", (len + 1) / 2);
+    assert_eq!((len + 1) / 2, 6903);
 }
 
 #[test]
@@ -92,5 +92,5 @@ fn part2() {
             }
         }
     }
-    println!("{res}");
+    assert_eq!(res, 265);
 }

@@ -26,7 +26,7 @@ fn part1() {
         .map(create_rows)
         .map(|rows| rows.iter().map(|r| r.last().unwrap()).sum::<i32>())
         .sum::<i32>();
-    println!("{}", res);
+    assert_eq!(res, 1969958987);
 }
 
 #[test]
@@ -42,5 +42,5 @@ fn part2() {
                 .sum::<i32>()
         })
         .sum::<i32>();
-    println!("{}", res);
+    assert_eq!(res, 1068);
 }

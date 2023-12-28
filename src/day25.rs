@@ -95,5 +95,5 @@ fn part1() {
     }
     let a = get_size(&graph, top.last().unwrap().0 .0);
     let b = get_size(&graph, top.last().unwrap().0 .1);
-    println!("{}", a * b);
+    assert_eq!(a * b, 551196);
 }

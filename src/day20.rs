@@ -130,19 +130,16 @@ fn part1() {
             }
         }
     }
-    println!("{}", low * high);
+    assert_eq!(low * high, 788848550);
 }
 
-#[test]
-fn part2() {
-    let input = include_str!("../input/day20.txt");
+fn solve2(input: &str) -> i64 {
     let (broadcast, mut nodes) = parse(input);
 
     let mut iters = HashMap::new();
     for presses in 1_i64.. {
         if iters.len() == 4 {
-            println!("{}", iters.into_values().reduce(num::integer::lcm).unwrap());
-            break;
+            return iters.into_values().reduce(num::integer::lcm).unwrap();
         }
 
         let mut q = VecDeque::new();
@@ -166,4 +163,10 @@ fn part2() {
             }
         }
     }
+    0
+}
+#[test]
+fn part2() {
+    let input = include_str!("../input/day20.txt");
+    assert_eq!(solve2(input), 228300182686739);
 }

@@ -70,7 +70,7 @@ fn part1() {
         let input = Input { row, nums };
         sum += input.num_options(&mut dp, 0, 0);
     }
-    println!("{sum}");
+    assert_eq!(sum, 7163);
 }
 
 #[test]
@@ -89,5 +89,5 @@ fn part2() {
         let input = Input { row, nums };
         sum += input.num_options(&mut dp, 0, 0);
     }
-    println!("{sum}");
+    assert_eq!(sum, 17788038834112);
 }

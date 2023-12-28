@@ -81,7 +81,7 @@ fn part1() {
             }
         }
     }
-    println!("{res}");
+    assert_eq!(res, 12343);
 }
 
 #[test]
@@ -153,5 +153,5 @@ fn part2() {
         h0.pos.y * h0.dir.x - h2.pos.y * h2.dir.x - h0.pos.x * h0.dir.y + h2.pos.x * h2.dir.y,
     ];
     let res = co.solve(&consts).unwrap();
-    println!("{}", (res[0] + res[1] + res[2]).round() as i64);
+    assert_eq!((res[0] + res[1] + res[2]).round() as i64, 769281292688187);
 }

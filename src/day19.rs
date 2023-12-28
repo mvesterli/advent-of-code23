@@ -113,7 +113,7 @@ fn part1() {
             workflow_name = workflows[workflow_name].apply(&part);
         }
     }
-    println!("{result}");
+    assert_eq!(result, 319295);
 }
 
 fn solve(
@@ -161,5 +161,5 @@ fn part2() {
     let workflows = workflows.into_iter().map(|v| (v.name, v)).collect();
     let options = "xmas".chars().map(|c| (c, (1, 4000))).collect();
     let result = solve(&workflows, "in", options);
-    println!("{result}");
+    assert_eq!(result, 110807725108076);
 }

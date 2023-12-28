@@ -31,7 +31,7 @@ fn part1() {
         sum += points;
     }
 
-    println!("{sum}");
+    assert_eq!(sum, 26914);
 }
 
 #[test]
@@ -63,5 +63,5 @@ fn part2() {
         }
     }
 
-    println!("{}", copies.iter().sum::<i32>());
+    assert_eq!(copies.iter().sum::<i32>(), 13080971);
 }

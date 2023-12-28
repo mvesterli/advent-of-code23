@@ -90,7 +90,7 @@ fn part1() {
         .enumerate()
         .map(|v| (v.0 + 1) as i32 * v.1.bid)
         .sum();
-    println!("{}", res);
+    assert_eq!(res, 250120186);
 }
 
 #[test]
@@ -104,5 +104,5 @@ fn part2() {
         .enumerate()
         .map(|v| (v.0 + 1) as i32 * v.1.bid)
         .sum();
-    println!("{}", res);
+    assert_eq!(res, 250665248);
 }

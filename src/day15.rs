@@ -10,7 +10,7 @@ fn part1() {
         .split(',')
         .map(|s| s.bytes().fold(0, |acc, c| ((acc + c as i32) * 17) % 256))
         .sum();
-    println!("{}", res);
+    assert_eq!(res, 509152);
 }
 
 #[test]
@@ -45,5 +45,5 @@ fn part2() {
                     .sum::<usize>()
         })
         .sum::<usize>();
-    println!("{}", res);
+    assert_eq!(res, 244403);
 }

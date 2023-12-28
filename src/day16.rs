@@ -53,9 +53,8 @@ fn energized(grid: &Vec<Vec<char>>, entry: ((i32, i32), (i32, i32))) -> usize {
 #[test]
 fn part1() {
     let input = include_str!("../input/day16.txt");
-
     let grid: Vec<Vec<char>> = input.lines().map(|l| l.chars().collect()).collect();
-    println!("{}", energized(&grid, ((0, 0), (0, 1))));
+    assert_eq!(energized(&grid, ((0, 0), (0, 1))), 7482);
 }
 
 #[test]
@@ -71,5 +70,5 @@ fn part2() {
         .map(|entry| energized(&grid, entry))
         .max()
         .unwrap();
-    println!("{}", res);
+    assert_eq!(res, 7896);
 }
